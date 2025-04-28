@@ -1,36 +1,54 @@
+import axios from "axios";
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import { IProductData } from "./ProductItem";
+import QtyButton from "./QtyButton";
 
-function ProductCart() {
+interface IProductCart {
+  id: number;
+  qty: number;
+}
+
+function ProductCart({ id }: IProductCart) {
+  const [data, setData] = useState({} as IProductData);
+
+  useEffect(() => {
+    axios(`http://localhost:8000/product/${id}`).then((result) => {
+      const { data } = result;
+      setData(data);
+    });
+  }, [id]);
+
   return (
     <div className="flex items-center bg-white border border-gray-200 p-4 rounded-lg shadow-sm mb-3">
       <div className="w-24 h-24 bg-gray-200 rounded-md flex-shrink-0">
-        <Image
-          src={
-            "https://images.unsplash.com/photo-1509024644558-2f56ce76c490?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fHJvbWV8ZW58MHx8MHx8fDA%3D"
-          }
-          alt="product image"
-          width={100}
-          height={100}
-          unoptimized
-          className="w-full h-full rounded"
-        />
+        {data.image ? (
+          <Image
+            src={data.image}
+            alt="product image"
+            width={100}
+            height={100}
+            unoptimized
+            className="w-full h-full rounded"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-gray-500">
+            No Image
+          </div>
+        )}
       </div>
 
       {/* اطلاعات محصول */}
       <div className="flex-1 ml-4">
-        <h2 className="text-lg font-semibold">Rome Italy</h2>
+        <h2 className="text-lg font-semibold">{data.title}</h2>
 
         {/* تعداد و قیمت */}
         <div className="flex items-center justify-between mt-2">
           {/* تغییر تعداد */}
-          <div className="flex items-center gap-2">
-            <button className="w-8 h-8 bg-gray-300 rounded">-</button>
-            <span>2</span>
-            <button className="w-8 h-8 bg-gray-300 rounded">+</button>
-          </div>
+          <QtyButton {...data} />
 
           {/* قیمت */}
-          <div className="text-lg font-bold">$1,499</div>
+          <div className="text-lg font-bold">{data.price}$</div>
         </div>
 
         {/* دکمه‌های پایین */}

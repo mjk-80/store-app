@@ -1,13 +1,15 @@
 "use client";
 
 import { useCart } from "@/app/context/cartcontext";
+import QtyButton from "./QtyButton";
 
-interface IAdd {
+export interface IAdd {
   id: string;
+  qty?: number;
 }
 
 function AddToCart({ id }: IAdd) {
-  const { cartItem, handleIncrease, handleDecrease, getProductQty } = useCart();
+  const { cartItem, handleIncrease, getProductQty } = useCart();
   console.log(cartItem);
 
   return (
@@ -22,21 +24,7 @@ function AddToCart({ id }: IAdd) {
           </button>
         </div>
       ) : (
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => handleDecrease(parseInt(id))}
-            className="w-8 h-8 bg-gray-300 rounded"
-          >
-            -
-          </button>
-          <span>{getProductQty(parseInt(id))}</span>
-          <button
-            onClick={() => handleIncrease(parseInt(id))}
-            className="w-8 h-8 bg-gray-300 rounded"
-          >
-            +
-          </button>
-        </div>
+        <QtyButton id={id} />
       )}
     </div>
   );

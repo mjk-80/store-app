@@ -5,12 +5,12 @@ import BackButton from "@/components/BackButton";
 import AddToCart from "@/components/AddToCart";
 
 interface IDetailProps {
-  params: { id: string };
-  useParams: null;
+  params: Promise<{ id: string }>;
+  useParams?: null;
 }
 
-async function ProductDetail(props: Promise<IDetailProps>) {
-  const id = (await props).params.id;
+async function ProductDetail(props: IDetailProps) {
+  const id = (await props.params).id;
 
   const result = await fetch(`http://localhost:8000/product/${id}`);
   const data = (await result.json()) as IProductData;
